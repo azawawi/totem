@@ -1,4 +1,4 @@
-totem
+Totem
 =====
 
 This is a experiment for a smart web-based search bar for Perl 6 development.
