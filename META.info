@@ -2,7 +2,7 @@
 	"name"        : "Totem",
 	"version"     : "*",
 	"description" : "Perl 6 Smart Search Development Bar",
-	"depends"     : [ "File::Temp", "HTTP::Easy", "JSON::Tiny", "Pod::To::HTML", "URI", "p6doc" ],
+	"depends"     : [ "HTTP::Easy", "JSON::Tiny", "URI" ],
 	"provides"    : {
 		"Totem"  : "lib/Totem.pm",
 	},
