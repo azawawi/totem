@@ -1,0 +1,10 @@
+{
+	"name"        : "Totem",
+	"version"     : "*",
+	"description" : "Perl 6 Smart Search Development Bar",
+	"depends"     : [ "File::Temp", "HTTP::Easy", "JSON::Tiny", "Pod::To::HTML", "URI", "p6doc" ],
+	"provides"    : {
+		"Totem"  : "lib/Totem.pm",
+	},
+	"source-url"  : "git://github.com/azawawi/totem.git"
+}
