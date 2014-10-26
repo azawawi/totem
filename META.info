@@ -4,7 +4,7 @@
 	"description" : "Perl 6 Smart Search Development Bar",
 	"depends"     : [ "HTTP::Easy", "JSON::Tiny", "URI" ],
 	"provides"    : {
-		"Totem"  : "lib/Totem.pm",
+		"Totem"  : "lib/Totem.pm"
 	},
 	"source-url"  : "git://github.com/azawawi/totem.git"
 }
