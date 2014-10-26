@@ -33,4 +33,12 @@ module Totem::Util
 		$mime-type;
 	}
 
+	our sub find-site-lib-dir {
+		my @dirs = $*SPEC.splitdir($*EXECUTABLE);
+		@dirs = @dirs[0..*-3], 'languages', 'perl6', 'site', 'lib';
+
+		return \@dirs, $*SPEC.catdir( @dirs );
+	}
+
+
 }

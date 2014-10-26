@@ -3,6 +3,7 @@ use v6;
 # External
 use HTTP::Easy::PSGI;
 use URI;
+use File::Find;
 
 use Totem::Util;
 
@@ -88,9 +89,36 @@ then it listens on all interfaces
 			];
 		}
 
+
+		build-module-index();
+
 		my $server = HTTP::Easy::PSGI.new(:host($host), :port($port));
 		$server.app($app);
 		$server.run;
+	}
+
+	my @modules;
+
+	sub build-module-index
+	{
+		"Building module index".say;
+
+		my ($site-lib-dirs, $site-lib-dir) = Totem::Util::find-site-lib-dir;
+
+		my $files = find(
+			:dir($site-lib-dir),
+			:name(/ '.pm' '6'? $/)
+		);
+
+		my @results = gather for @$files -> $file
+		{
+			my @dirs = $*SPEC.splitdir($file);
+			my $module = @dirs[+@$site-lib-dirs..*].join("::");
+			take $module.subst(/ '.pm' '6'? $/, '');
+		};
+
+		@modules = @results.sort;
+		@modules.say;
 	}
 
 }
