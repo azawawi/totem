@@ -57,7 +57,11 @@ then it listens on all interfaces
 			if $uri eq '/'
 			{
 				$filename = 'index.html';
-			} 
+			}
+			elsif $uri eq '/search'
+			{
+				return search(Totem::Util::get-parameter(%env<psgi.input>.decode, 'pattern')); 
+			}
 			else 
 			{
 				$filename = $uri.substr(1);
@@ -118,9 +122,51 @@ then it listens on all interfaces
 		};
 
 		@modules = @results.sort;
-		@modules.say;
+		"Found {+@modules} module(s)".say;
 	}
 
+	sub search(Str $pattern is copy)
+	{
+		# Trim the pattern and make sure we dont fail on undefined
+		$pattern = $pattern // '';
+		$pattern = $pattern.trim;
+
+		# Start stopwatch
+		my $t0 = now;
+
+		constant $MAX_SIZE = 5;
+		my $count = 0;
+		my @results = gather for @modules -> $module
+		{
+			if $module ~~ m:i/"$pattern"/ {
+				take $module;
+
+				$count++;
+				if $count >= $MAX_SIZE {
+					last;
+				}
+			}
+		}
+		
+		@results.say;
+
+		# Stop stopwatch and calculate the duration
+		my $duration = sprintf("%.3f", now - $t0);
+
+		# PSGI response
+		[
+			200,
+			[ 'Content-Type' => 'application/json' ],
+			[
+				to-json(
+					%(
+						'results'  => @results,
+						'duration' => $duration,
+					)
+				)
+			],
+		];
+	}
 }
 
 # vim: ft=perl6
