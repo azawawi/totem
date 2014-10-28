@@ -107,20 +107,25 @@ then it listens on all interfaces
 	{
 		"Building module index".say;
 
-		my ($site-lib-dirs, $site-lib-dir) = Totem::Util::find-site-lib-dir;
+		my ($lib-dirs, $lib-dir) = Totem::Util::find-perl6-dir(['lib']);
+		my ($site-lib-dirs, $site-lib-dir) = Totem::Util::find-perl6-dir(['site', 'lib']);
+		
 
-		my $files = find(
-			:dir($site-lib-dir),
-			:name(/ '.pm' '6'? $/)
-		);
-
-		my @results = gather for @$files -> $file
+		my @results = gather for ($lib-dir, $site-lib-dir) -> $dir
 		{
-			my @dirs = $*SPEC.splitdir($file);
-			my $module = @dirs[+@$site-lib-dirs..*].join("::");
-			take $module.subst(/ '.pm' '6'? $/, '');
-		};
-
+			my $files = find(
+				:dir($dir),
+				:name(/ '.pm' '6'? $/)
+			);
+			
+			for @$files -> $file
+			{
+				my @dirs = $*SPEC.splitdir($file);
+				my $module = @dirs[+@dir..*].join("::");
+				take $module.subst(/ '.pm' '6'? $/, '');
+			}
+		}
+		
 		@modules = @results.sort;
 		"Found {+@modules} module(s)".say;
 	}
