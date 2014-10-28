@@ -118,11 +118,13 @@ then it listens on all interfaces
 				:name(/ '.pm' '6'? $/)
 			);
 			
+			my $dir-array-length = ($dir eq $lib-dir) ?? +@$lib-dirs !! +@$site-lib-dirs;
 			for @$files -> $file
 			{
 				my @dirs = $*SPEC.splitdir($file);
-				my $module = @dirs[+@dir..*].join("::");
-				take $module.subst(/ '.pm' '6'? $/, '');
+
+				# Take module name
+				take @dirs[$dir-array-length..*].join("::").subst(/ '.pm' '6'? $/, '');
 			}
 		}
 		
